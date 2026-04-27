@@ -8,280 +8,283 @@ from agents.coordinator import CoordinatorAgent
 from vector_store.store import VectorStore
 
 # Set up page config
-st.set_page_config(page_title="Agentic RAG Chatbot", layout="wide", page_icon="🔮")
+st.set_page_config(page_title="Nexus Agentic RAG", layout="wide", page_icon="🌌")
 
-# Pixel-Perfect CSS for Premium Glassmorphism
+# --- UNIQUE CYBER-SPACE CSS ---
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600&family=Outfit:wght@300;600&display=swap');
     
+    :root {
+        --neon-cyan: #00f2ff;
+        --neon-magenta: #ff00ff;
+        --glass-bg: rgba(10, 10, 30, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
     html, body, [class*="css"] {
-        font-family: 'Outfit', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
     }
     
+    /* Immersive Deep Space Background */
     .stApp {
-        background: radial-gradient(circle at top right, #1e1e4a, #0a0a1a);
+        background: radial-gradient(circle at 50% 50%, #1a1a4b 0%, #050510 100%);
         color: #ffffff;
     }
 
-    /* Top Horizontal Header */
-    .header-bar {
-        font-size: 1.4rem;
-        font-weight: 600;
+    /* Top Horizontal Status Bar */
+    .nexus-top-bar {
+        font-size: 0.9rem;
+        font-weight: 300;
+        letter-spacing: 2px;
+        color: var(--neon-cyan);
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--glass-border);
         padding: 10px 0;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        margin-bottom: 25px;
-        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 30px;
+        text-align: center;
+        opacity: 0.8;
     }
     
-    /* Premium Title Card (Pill Shape) */
-    .title-pill {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(25px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 30px;
-        padding: 18px 40px;
+    /* Floating Command Header */
+    .command-header {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 50px;
+        padding: 15px 40px;
         display: flex;
         align-items: center;
-        gap: 25px;
+        justify-content: space-between;
         margin-bottom: 40px;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
     }
-    .title-pill h1 {
-        background: linear-gradient(90deg, #ff69b4, #00d2ff);
+    .command-header h1 {
+        font-family: 'Outfit', sans-serif;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-magenta));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-size: 2.4rem;
+        font-size: 2.2rem;
         font-weight: 600;
         margin: 0;
     }
 
-    /* Sidebar Section Headings */
-    .sidebar-section-title {
+    /* Sidebar Intelligence Hub */
+    [data-testid="stSidebar"] {
+        background: rgba(5, 5, 15, 0.9) !important;
+        border-right: 1px solid var(--glass-border);
+    }
+    .hub-label {
         font-size: 0.75rem;
         font-weight: 600;
+        color: var(--neon-magenta);
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.5);
         margin: 30px 0 15px 0;
-        letter-spacing: 2px;
+        letter-spacing: 3px;
+        border-left: 3px solid var(--neon-magenta);
+        padding-left: 10px;
     }
 
-    /* Individual File Cards (Manual Construction) */
-    .file-card {
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 18px;
+    /* Futuristic File Tiles */
+    .nexus-file-tile {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--glass-border);
+        border-left: 4px solid var(--neon-cyan);
+        border-radius: 12px;
         padding: 15px;
         margin-bottom: 15px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        transition: transform 0.2s ease;
+        transition: all 0.3s ease;
     }
-    .file-card:hover {
-        transform: translateY(-2px);
-        background: rgba(255, 255, 255, 0.12);
+    .nexus-file-tile:hover {
+        background: rgba(0, 242, 255, 0.05);
+        border-color: var(--neon-cyan);
+        box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
     }
-    .file-card-top {
+    .tile-header {
         display: flex;
         align-items: center;
-        gap: 15px;
-    }
-    .file-name {
+        gap: 12px;
         font-size: 0.9rem;
-        font-weight: 400;
-        color: rgba(255, 255, 255, 0.9);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        max-width: 180px;
+        margin-bottom: 8px;
     }
-    .progress-track {
-        width: 100%;
-        height: 5px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 3px;
-        overflow: hidden;
+    .tile-status-bar {
+        height: 3px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 2px;
     }
-    .progress-fill {
+    .tile-status-fill {
         height: 100%;
-        background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        background: var(--neon-cyan);
         width: 100%;
-    }
-    .analyzed-badge {
-        font-size: 0.7rem;
-        color: #4CAF50;
-        text-align: right;
-        font-weight: 600;
-        margin-top: -5px;
+        box-shadow: 0 0 10px var(--neon-cyan);
     }
 
-    /* Info Stats Cards */
-    .stat-box {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        padding: 18px;
-        margin-bottom: 20px;
-    }
-    .stat-label {
-        font-size: 0.8rem;
-        color: rgba(255, 255, 255, 0.6);
-        margin-bottom: 5px;
-    }
-    .stat-value {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #00d2ff;
-    }
-
-    /* Chat Styling Enhancements */
+    /* Glowing Agent Messages */
     [data-testid="stChatMessage"] {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
         border-radius: 25px;
         padding: 20px;
         margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    [data-testid="stChatMessage"]:has([data-testid="stIconMaterial"]:contains("smart_toy")) {
+        border-left: 4px solid var(--neon-magenta);
+        box-shadow: -5px 0 20px rgba(255, 0, 255, 0.1);
     }
     
-    /* Clean Page */
+    /* UI Cleanup */
     #MainMenu {visibility: hidden;}
     header {visibility: hidden;}
     footer {visibility: hidden;}
-    .block-container { padding-top: 1.5rem !important; }
+    .block-container { padding-top: 1rem !important; }
     
-    /* Uploader Styling */
-    .stFileUploader section {
-        background: rgba(255,255,255,0.05) !important;
-        border: 2px dashed rgba(255,255,255,0.2) !important;
-        border-radius: 15px !important;
-        padding: 20px !important;
+    /* Custom Button Styling */
+    .stButton>button {
+        background: linear-gradient(90deg, var(--neon-cyan), #0088ff) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50px !important;
+        font-weight: 600 !important;
+        padding: 10px 25px !important;
+        transition: all 0.3s ease !important;
+    }
+    .stButton>button:hover {
+        box-shadow: 0 0 20px var(--neon-cyan) !important;
+        transform: scale(1.02);
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 1. Top Header Bar
-st.markdown('<div class="header-bar">Agentic RAG Chatbot for Multi-Format Document QA using MCP</div>', unsafe_allow_html=True)
+# --- LAYOUT CONSTRUCTION ---
 
-# 2. Premium Pill Title
+# Top Status Line
+st.markdown('<div class="nexus-top-bar">NEXUS MULTI-AGENT PROTOCOL ACTIVE // ENCRYPTION ENABLED</div>', unsafe_allow_html=True)
+
+# Floating Command Header
 st.markdown("""
-<div class="title-pill">
-    <div style="background: rgba(255,255,255,0.1); padding: 12px; border-radius: 18px;">
-        <img src="https://img.icons8.com/fluency/48/artificial-intelligence.png" width="32"/>
+<div class="command-header">
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <div style="background: rgba(0,242,255,0.1); padding: 12px; border-radius: 20px; border: 1px solid var(--neon-cyan);">
+            <img src="https://img.icons8.com/fluency/48/space-explorer.png" width="35"/>
+        </div>
+        <h1>Agentic RAG Chatbot</h1>
     </div>
-    <h1>🔮 Agentic RAG Chatbot</h1>
-    <div style="margin-left: auto; opacity: 0.6;">
-        <img src="https://img.icons8.com/material-rounded/24/ffffff/settings.png" width="24"/>
+    <div style="display: flex; gap: 15px;">
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" width="24" style="opacity:0.5"/>
+        <img src="https://img.icons8.com/ios-filled/50/ffffff/menu.png" width="24" style="opacity:0.5"/>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-# Vector Store Logic
-@st.cache_resource(show_spinner="Initializing Vector Engine...")
-def load_vector_store():
+# State & Agent Initializtion
+@st.cache_resource(show_spinner="Syncing Neural Core...")
+def init_core():
     return VectorStore()
 
-vector_store_instance = load_vector_store()
+core_store = init_core()
 
 if "coordinator" not in st.session_state:
-    st.session_state.coordinator = CoordinatorAgent(IngestionAgent(), RetrievalAgent(vector_store_instance), LLMResponseAgent())
+    st.session_state.coordinator = CoordinatorAgent(IngestionAgent(), RetrievalAgent(core_store), LLMResponseAgent())
     st.session_state.messages = []
 
-# 3. Sidebar (Document Intelligence Hub)
+# --- INTELLIGENCE HUB (SIDEBAR) ---
 with st.sidebar:
-    st.markdown('<div class="sidebar-section-title">Document Upload</div>', unsafe_allow_html=True)
+    st.markdown('<div class="hub-label">Data Ingestion Hub</div>', unsafe_allow_html=True)
     
-    uploaded_files = st.file_uploader(
-        "Drop files here", 
+    files = st.file_uploader(
+        "Secure Upload", 
         type=["pdf", "pptx", "csv", "docx", "txt", "md"], 
         accept_multiple_files=True,
         label_visibility="collapsed"
     )
     
-    if uploaded_files:
-        for f in uploaded_files:
-            # Match icon to file type
-            icon_url = "https://img.icons8.com/color/48/pdf.png"
-            if f.name.endswith(".pptx"): icon_url = "https://img.icons8.com/color/48/microsoft-powerpoint.png"
-            elif f.name.endswith(".docx"): icon_url = "https://img.icons8.com/color/48/microsoft-word.png"
-            elif f.name.endswith(".csv"): icon_url = "https://img.icons8.com/color/48/csv.png"
-            elif f.name.endswith(".txt"): icon_url = "https://img.icons8.com/color/48/txt-file.png"
-            
+    if files:
+        for f in files:
+            ext = f.name.split('.')[-1].upper()
             st.markdown(f"""
-            <div class="file-card">
-                <div class="file-card-top">
-                    <img src="{icon_url}" width="26"/>
+            <div class="nexus-file-tile">
+                <div class="tile-header">
+                    <span style="color:var(--neon-cyan); font-weight:600;">[{ext}]</span>
                     <div class="file-name">{f.name}</div>
                 </div>
-                <div class="progress-track"><div class="progress-fill"></div></div>
-                <div class="analyzed-badge">Analyzed</div>
+                <div class="tile-status-bar"><div class="tile-status-fill"></div></div>
+                <div style="font-size:0.6rem; color:var(--neon-cyan); text-align:right;">DATA SYNCED</div>
             </div>
             """, unsafe_allow_html=True)
 
-    if st.button("🚀 Initialize Agents & Sync Data", use_container_width=True) and uploaded_files:
-        docs = [{"name": f.name, "bytes": f.read()} for f in uploaded_files]
-        
-        with st.status("Agentic Orchestration in Progress...", expanded=True) as status:
-            st.write("IngestionAgent: Extracting structural data...")
-            success, parsed_count, indexed_count = st.session_state.coordinator.process_documents(docs)
+    if st.button("🚀 EXECUTE NEURAL SYNC", use_container_width=True) and files:
+        docs = [{"name": f.name, "bytes": f.read()} for f in files]
+        with st.status("Agents Collaborating...", expanded=True) as status:
+            st.write("🌀 IngestionAgent: Decrypting structural layers...")
+            success, _, count = st.session_state.coordinator.process_documents(docs)
             if success:
-                st.write("RetrievalAgent: Syncing vector embeddings...")
-                st.session_state.indexed_count = indexed_count
-                status.update(label="System Ready!", state="complete", expanded=False)
+                st.session_state.indexed_count = count
+                status.update(label="Sync Complete!", state="complete", expanded=False)
             else:
-                status.update(label="Critical System Failure", state="error")
+                status.update(label="Sync Failed", state="error")
 
-    # Sidebar Stats
-    st.markdown('<div class="sidebar-section-title">Vector Database</div>', unsafe_allow_html=True)
-    db_status = "Ready" if "indexed_count" in st.session_state else "Empty"
-    st.markdown(f'<div class="stat-box"><div class="stat-label">Status</div><div class="stat-value" style="color:#4CAF50">{db_status}</div></div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="sidebar-section-title">Knowledge Base</div>', unsafe_allow_html=True)
-    count = st.session_state.get("indexed_count", 0)
-    st.markdown(f'<div class="stat-box"><div class="stat-label">Total Knowledge Chunks</div><div class="stat-value">{count}</div></div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="sidebar-section-title">System Settings</div>', unsafe_allow_html=True)
-    st.markdown('<div class="stat-box"><div class="stat-label">Current Version</div><div class="stat-value" style="font-size:0.9rem">v1.3.0 - High Speed</div></div>', unsafe_allow_html=True)
-
-# 4. Main Chat Interface
-st.markdown("### 💬 Agentic Collaboration Hub")
-
-# Display message history
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.write(msg["content"])
-        if msg.get("sources"):
-            with st.expander("🔍 Inspect Deep Context"):
-                for src in msg["sources"]:
-                    st.caption(src)
-
-# Query Input
-user_query = st.chat_input("Ask about your documents...")
-
-if user_query:
-    st.chat_message("user").write(user_query)
-    st.session_state.messages.append({"role": "user", "content": user_query})
+    # Metrics Section
+    st.markdown('<div class="hub-label">System Metrics</div>', unsafe_allow_html=True)
     
-    with st.spinner("Agents collaborating via MCP..."):
-        response = st.session_state.coordinator.handle_query(user_query)
-        
-        if response["success"]:
+    # Vector DB Metric
+    v_status = "ACTIVE" if "indexed_count" in st.session_state else "OFFLINE"
+    v_color = "#00f2ff" if v_status == "ACTIVE" else "#ff3333"
+    st.markdown(f"""
+    <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:0.7rem; color:rgba(255,255,255,0.5); margin-bottom:5px;">VECTOR ENGINE</div>
+        <div style="font-size:1.1rem; color:{v_color}; font-weight:600;">{v_status}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Knowledge Metric
+    k_count = st.session_state.get("indexed_count", 0)
+    st.markdown(f"""
+    <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:15px; border:1px solid rgba(255,255,255,0.1); margin-top:15px;">
+        <div style="font-size:0.7rem; color:rgba(255,255,255,0.5); margin-bottom:5px;">KNOWLEDGE CHUNKS</div>
+        <div style="font-size:1.1rem; color:var(--neon-magenta); font-weight:600;">{k_count}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Settings Info
+    st.markdown('<div class="hub-label">System Specs</div>', unsafe_allow_html=True)
+    st.caption("Protocol: MCP-v2")
+    st.caption("Engine: Gemini-2.5-Flash")
+
+# --- COLLABORATION HUB (CHAT) ---
+st.markdown("### 💬 Neural Communication Interface")
+
+for m in st.session_state.messages:
+    with st.chat_message(m["role"]):
+        st.write(m["content"])
+        if m.get("sources"):
+            with st.expander("🔍 Trace Context Sources"):
+                for s in m["sources"]:
+                    st.caption(f"📍 {s}")
+
+query = st.chat_input("Enter query for the Agentic Collective...")
+
+if query:
+    st.chat_message("user").write(query)
+    st.session_state.messages.append({"role": "user", "content": query})
+    
+    with st.spinner("Agents orchestrating via MCP..."):
+        resp = st.session_state.coordinator.handle_query(query)
+        if resp["success"]:
             with st.chat_message("assistant"):
-                st.write(response["answer"])
-                with st.expander("🔍 Inspect Deep Context"):
-                    for src in response["sources"]:
-                        st.caption(src)
+                st.write(resp["answer"])
+                with st.expander("🔍 Trace Context Sources"):
+                    for s in resp["sources"]:
+                        st.caption(f"📍 {s}")
             st.session_state.messages.append({
                 "role": "assistant", 
-                "content": response["answer"],
-                "sources": response["sources"]
+                "content": resp["answer"],
+                "sources": resp["sources"]
             })
         else:
-            st.chat_message("assistant").write("Matrix error: Could not synthesize response.")
+            st.error("Protocol Error: Unable to synthesize response.")
 
-# 5. MCP JSON Trace Expander
+# --- MCP LOGS ---
 st.markdown("---")
-with st.expander("⚙️ Internal Agentic Transmission Logs (MCP JSON)", expanded=False):
-    for log in reversed(st.session_state.coordinator.mcp_logs[-15:]):
+with st.expander("⚙️ VIEW NEURAL TRANSMISSION LOGS (MCP JSON)", expanded=False):
+    for log in reversed(st.session_state.coordinator.mcp_logs[-10:]):
         st.json(log)
