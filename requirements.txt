@@ -1,0 +1,9 @@
+streamlit               # Frontend UI & Glassmorphism Design
+PyPDF2                  # PDF Document Parsing
+python-docx             # Word Document Parsing
+python-pptx             # PowerPoint Parsing
+pandas                  # CSV Data Parsing
+sentence-transformers   # AI Embedding Generation (Local)
+faiss-cpu               # High-Speed Vector Database
+google-generativeai     # Google Gemini 2.5 LLM Integration
+python-dotenv           # Secure API Key Management
