@@ -24,13 +24,22 @@ class IngestionAgent:
 
     def process_message(self, message: MCPMessage) -> MCPMessage:
         if message.type == "PARSE_DOCUMENTS":
-            documents = message.payload.get("documents", []) # list of dict with name and bytes
+            from concurrent.futures import ThreadPoolExecutor
+            documents = message.payload.get("documents", [])
             all_chunks = []
-            for doc in documents:
+            
+            # Parallel parsing to speed up multi-file ingestion
+            def process_doc(doc):
                 text = parse_document(doc["name"], doc["bytes"])
                 if text.strip():
-                    chunks = self.chunk_text(text, doc["name"])
-                    all_chunks.extend(chunks)
+                    return self.chunk_text(text, doc["name"])
+                return []
+
+            with ThreadPoolExecutor() as executor:
+                results = list(executor.map(process_doc, documents))
+            
+            for chunks in results:
+                all_chunks.extend(chunks)
             
             return MCPMessage(
                 sender=self.name,

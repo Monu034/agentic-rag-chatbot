@@ -14,8 +14,14 @@ class VectorStore:
         if not chunks:
             return
         texts = [chunk["text"] for chunk in chunks]
-        embeddings = self.model.encode(texts)
-        self.index.add(np.array(embeddings).astype('float32'))
+        # Batch encode with multi-threading enabled
+        embeddings = self.model.encode(
+            texts, 
+            batch_size=32, 
+            show_progress_bar=False, 
+            convert_to_numpy=True
+        )
+        self.index.add(embeddings.astype('float32'))
         self.chunks.extend(chunks)
         
     def search(self, query: str, top_k: int = 3) -> List[Dict]:
