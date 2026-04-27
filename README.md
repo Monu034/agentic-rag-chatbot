@@ -1,5 +1,7 @@
 # Agentic RAG Chatbot for Multi-Format Document QA using MCP
 
+![App Preview](app_preview.png)
+
 ## 📝 Overview
 The **Agentic RAG Chatbot** is a high-level, multi-agent AI system designed to answer complex questions based solely on uploaded documents. Unlike standard chatbots, this system utilizes a modular "Agentic" architecture where specialized AI workers collaborate to parse data, retrieve information, and generate accurate, context-aware responses.
 
