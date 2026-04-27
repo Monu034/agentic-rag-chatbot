@@ -1,94 +1,94 @@
-# Agentic RAG Chatbot with MCP 🤖
+# Agentic RAG Chatbot for Multi-Format Document QA using MCP
 
-An agent-based Retrieval-Augmented Generation (RAG) chatbot that processes multiple document formats (PDF, PPTX, CSV, DOCX, TXT) and answers user questions based on the uploaded context. The system uses an agentic architecture with simulated Model Context Protocol (MCP) for structured message passing between components.
+## 📝 Overview
+The **Agentic RAG Chatbot** is a high-level, multi-agent AI system designed to answer complex questions based solely on uploaded documents. Unlike standard chatbots, this system utilizes a modular "Agentic" architecture where specialized AI workers collaborate to parse data, retrieve information, and generate accurate, context-aware responses.
 
-## 🌟 Features
+## ✨ Features
+*   **Multi-Format Support:** Seamlessly process PDF, PPTX, DOCX, CSV, and TXT files.
+*   **Agentic Orchestration:** Specialized agents for Ingestion, Retrieval, and Generation.
+*   **Semantic Search:** Utilizes FAISS (Facebook AI Similarity Search) for millisecond-fast document retrieval.
+*   **MCP Protocol:** Implements structured Model Context Protocol (MCP) communication for traceability.
+*   **Deep Context Inspection:** View the exact source chunks used by the AI to verify accuracy.
+*   **Premium UI:** Modern "Glassmorphism" interface built with Streamlit and custom CSS.
 
-- **Multi-Format Parsing**: Extracts text from PDF, PPTX, CSV, DOCX, and TXT files.
-- **Agentic Architecture**: Uses distinct agents (Ingestion, Retrieval, LLM Response) to handle specific tasks.
-- **Model Context Protocol (MCP)**: Agents communicate via structured JSON messages (`sender`, `receiver`, `type`, `trace_id`, `payload`).
-- **Vector Search**: Uses `SentenceTransformers` and `FAISS` for fast, semantic retrieval.
-- **LLM Integration**: Uses Google's Gemini Flash for generating accurate, context-aware answers.
-- **Streamlit UI**: A clean, beginner-friendly web interface for document uploading, querying, and viewing MCP traces.
+## 🛠️ Tech Stack
+*   **Frontend:** Streamlit (Python-based Web Framework)
+*   **LLM Engine:** Google Gemini 2.5 Flash
+*   **Vector Database:** FAISS (Local CPU-based)
+*   **Embeddings:** Sentence-Transformers (all-MiniLM-L6-v2)
+*   **Parsing:** PyPDF2, python-pptx, python-docx, pandas
+*   **Environment:** Python 3.9+, python-dotenv
 
-## 🏗️ System Architecture
+## 🏗️ Architecture & MCP
+This project follows a **Multi-Agent Orchestration** pattern. Every action in the system is handled by a specialized agent communicating via structured JSON messages based on the **Model Context Protocol (MCP)**.
 
-1. **Streamlit UI (Coordinator)**: Acts as the frontend and orchestrator. It receives user inputs and routes tasks to the appropriate agents.
-2. **Ingestion Agent**: Receives raw documents, parses them based on their format, and chunks the text into smaller segments.
-3. **Retrieval Agent**: Receives text chunks, generates embeddings using `sentence-transformers`, and stores them in a `FAISS` vector index. During QA, it receives queries, searches the vector index, and returns the most relevant chunks.
-4. **LLM Response Agent**: Receives the retrieved context and the user query. It formats a prompt and calls the Gemini LLM to generate the final response.
+### The Agents:
+1.  **CoordinatorAgent:** The "Brain" that orchestrates the entire workflow and manages message routing.
+2.  **IngestionAgent:** Handles raw file bytes and extracts clean, chunked text.
+3.  **RetrievalAgent:** Converts text into vector embeddings and searches the FAISS index.
+4.  **LLMResponseAgent:** Takes retrieved context and crafts the final human-like response.
 
-### MCP Message Flow Example
-
+### MCP Message Structure:
+Agents communicate using a standardized format:
 ```json
 {
-  "sender": "RetrievalAgent",
-  "receiver": "LLMResponseAgent",
-  "type": "RETRIEVAL_RESULT",
-  "trace_id": "e4f8d9b1-...",
-  "payload": {
-    "retrieved_context": ["[Source: data.pdf] Revenue increased by 20%..."],
-    "query": "What was the revenue increase?"
-  }
+  "sender": "CoordinatorAgent",
+  "receiver": "RetrievalAgent",
+  "type": "RETRIEVE_CONTEXT",
+  "trace_id": "9be75902...",
+  "payload": { "query": "Your question", "top_k": 3 }
 }
 ```
 
-## 🚀 Setup Instructions
+## 🔄 Workflow
+1.  **Ingestion:** User uploads a document. The Coordinator sends it to the **IngestionAgent** for text extraction.
+2.  **Indexing:** Extracted text is sent to the **RetrievalAgent**, which generates embeddings and saves them in the FAISS database.
+3.  **Querying:** When a user asks a question, the Coordinator triggers the **RetrievalAgent** to find relevant paragraphs.
+4.  **Generation:** The retrieved paragraphs are sent to the **LLMResponseAgent**, which uses Gemini 2.5 to answer the question using *only* that context.
 
-### 1. Prerequisites
-- Python 3.9 or higher
-- Obtain a [Google Gemini API Key](https://aistudio.google.com/app/apikey).
-
-### 2. Installation
-Clone the repository and install the required dependencies:
-
-```bash
-git clone <your-repo-link>
-cd Chatbot
-pip install -r requirements.txt
-```
-
-### 3. Environment Variables
-Create a `.env` file in the root directory and add your Gemini API key:
-```ini
-GEMINI_API_KEY=your_api_key_here
-```
-
-### 4. Run the Application
-Start the Streamlit application:
-```bash
-streamlit run app.py
-```
-
-## 📂 Repository Structure
-
-```
+## 📂 Project Structure
+```text
 Chatbot/
-├── agents/
-│   ├── __init__.py
-│   ├── ingestion_agent.py   # Parses and chunks documents
-│   ├── llm_agent.py         # Generates LLM responses
-│   ├── mcp.py               # Defines the MCP message structure
-│   └── retrieval_agent.py   # Handles FAISS indexing and searching
-├── utils/
-│   └── document_parser.py   # Utility for extracting text from PDF, CSV, PPTX, etc.
-├── vector_store/
-│   └── store.py             # FAISS Vector DB implementation
-├── app.py                   # Streamlit UI & Coordinator
-├── requirements.txt         # Project dependencies
-└── README.md                # Project documentation
+├── .streamlit/          # Theme & UI Configuration
+├── agents/              # AI Agent Logic (Coordinator, Ingestion, etc.)
+├── test_data/           # Sample PDF/PPTX/CSV files for testing
+├── utils/               # Document parsing utilities
+├── vector_store/        # FAISS vector database implementation
+├── app.py               # Main Streamlit Application
+├── .env                 # API Keys (Local Only)
+├── .gitignore           # Prevents uploading secret keys
+├── README.md            # Project Documentation
+└── requirements.txt     # Project Dependencies
 ```
 
-## 💡 Best Practices Implemented
+## 🚀 How to Run
+1.  **Clone the Repository:**
+    ```bash
+    git clone https://github.com/Monu034/agentic-rag-chatbot.git
+    cd agentic-rag-chatbot
+    ```
+2.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+3.  **Set Up API Key:**
+    Create a `.env` file in the root directory and add your Google Gemini API Key:
+    ```text
+    GEMINI_API_KEY=your_api_key_here
+    ```
+4.  **Run the App:**
+    ```bash
+    python -m streamlit run app.py
+    ```
 
-- **Modularity**: Code is split into agents and utils for clean separation of concerns.
-- **Scalability**: FAISS can scale to handle many chunks efficiently.
-- **Traceability**: All agent communications are logged with unique `trace_id`s, visible in the UI.
+## 💡 Example Usage
+**User:** "What are the core features of the Capstone project mentioned in the slides?"  
+**Assistant:** "Based on the Batch-18 presentation, the core features include Multi-Agent communication via MCP, local FAISS vector storage, and support for multi-format document ingestion."
 
-## 🎥 Presentation & Demo Video Suggestions
+## 🔮 Future Improvements
+*   **Memory Management:** Add long-term memory for multi-turn conversations.
+*   **OCR Integration:** Add Tesseract or PaddleOCR to read scanned images and non-digital PDFs.
+*   **Hybrid Search:** Combine semantic vector search with keyword-based BM25 search for better accuracy.
 
-- **Slide 1 (Title)**: Project Title, Your Name.
-- **Slide 2 (Architecture)**: Show the Streamlit Coordinator routing tasks between the Ingestion, Retrieval, and LLM Agents.
-- **Slide 3 (MCP Flow)**: Show the JSON payload moving between agents, emphasizing how MCP standardizes context.
-- **Slide 4 (Tech Stack)**: Streamlit, FAISS, Sentence-Transformers, Gemini Flash.
-- **Slide 5 (Demo Video)**: 5 minutes covering app usage (2 min), architecture flow (2 min), and code walkthrough (1 min). Include uploading a tricky format like PPTX or CSV!
+## 🏁 Conclusion
+This project demonstrates the power of **Agentic AI** in solving real-world data retrieval problems. By utilizing MCP and a multi-agent structure, it provides a scalable, traceable, and highly accurate solution for document-based intelligence.
