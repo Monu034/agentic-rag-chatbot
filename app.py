@@ -115,13 +115,20 @@ with st.sidebar:
                     "bytes": f.read()
                 })
             
-            # Delegate entirely to CoordinatorAgent
+            # Delegate entirely to CoordinatorAgent with a progress bar
+            progress_bar = st.progress(0, text="Starting ingestion...")
+            
+            # Step 1: Parsing
+            progress_bar.progress(25, text="Agents: Extracting text from documents...")
             success, parsed_count, indexed_count = st.session_state.coordinator.process_documents(docs)
             
             if success:
+                progress_bar.progress(75, text="Agents: Creating vector embeddings...")
+                progress_bar.progress(100, text="Done!")
                 st.info(f"✨ Parsed {parsed_count} structural components.")
                 st.success(f"🚀 Vector Store synchronized with {indexed_count} chunks!")
             else:
+                progress_bar.empty()
                 st.error("Matrix failure: Document processing rejected.")
 
 # Main chat area
