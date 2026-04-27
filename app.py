@@ -13,74 +13,124 @@ st.set_page_config(page_title="Agentic RAG Chatbot", layout="wide", page_icon="�
 # Unique Custom CSS for Glassmorphism & Premium UI
 st.markdown("""
 <style>
-    /* Import modern font */
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
     
     html, body, [class*="css"] {
         font-family: 'Outfit', sans-serif;
     }
     
-    /* Dynamic animated background */
     .stApp {
-        background: linear-gradient(-45deg, #0a0a2a, #1a1a4b, #2a0a2a, #0a1a2a);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
+        background: radial-gradient(circle at top right, #1e1e4a, #0a0a1a);
+        color: #ffffff;
     }
-    @keyframes gradientBG {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    /* Glassmorphism Sidebar */
-    [data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.03) !important;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-right: 1px solid rgba(255, 255, 255, 0.1);
+
+    /* Top Banner Heading */
+    .top-header {
+        font-size: 1.2rem;
+        font-weight: 600;
+        padding-bottom: 10px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 20px;
+        opacity: 0.8;
     }
     
-    /* Glassmorphism Chat Inputs & Containers */
-    .stChatInputContainer {
-        background: rgba(0, 0, 0, 0.4) !important;
+    /* Main Title Glass Card */
+    .title-card {
+        background: rgba(255, 255, 255, 0.05);
         backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 20px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
     }
-    
-    /* Styled Headers */
-    h1, h2, h3 {
-        background: -webkit-linear-gradient(45deg, #ff00cc, #3333ff);
+    .main-title {
+        background: linear-gradient(90deg, #ff69b4, #00d2ff);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        font-size: 2.5rem;
         font-weight: 600;
+        margin: 0;
     }
-    
-    /* Agent Message Bubbles */
-    [data-testid="stChatMessage"] {
+
+    /* Sidebar Section Headings */
+    .sidebar-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        margin: 20px 0 10px 0;
+        letter-spacing: 1px;
+    }
+
+    /* Document Cards */
+    .doc-card {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 12px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .doc-icon {
+        font-size: 1.5rem;
+    }
+    .doc-info {
+        flex-grow: 1;
+    }
+    .doc-name {
+        font-size: 0.9rem;
+        font-weight: 400;
+    }
+    .doc-status {
+        font-size: 0.7rem;
+        color: #4CAF50;
+    }
+
+    /* Knowledge Cards */
+    .info-card {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 15px;
-        padding: 10px;
-        margin-bottom: 10px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    /* Chat Styling */
+    [data-testid="stChatMessage"] {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 15px;
     }
     
-    /* User Message Bubbles */
-    [data-testid="stChatMessage"]:has([data-testid="stIconMaterial"]:contains("person")) {
-        background: rgba(51, 51, 255, 0.1);
-        border: 1px solid rgba(51, 51, 255, 0.3);
-    }
-    
-    /* Hide top padding */
-    .block-container {
-        padding-top: 2rem !important;
-    }
+    /* Hide default Streamlit elements */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🔮 Agentic RAG Chatbot")
-st.markdown("*A next-generation Multi-Format QA system powered by Model Context Protocol.*")
+# Top Bar Heading
+st.markdown('<div class="top-header">Agentic RAG Chatbot for Multi-Format Document QA using MCP</div>', unsafe_allow_html=True)
+
+# Main Title Card
+st.markdown("""
+<div class="title-card">
+    <div style="background: #1e1e4a; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+        <img src="https://img.icons8.com/fluency/48/artificial-intelligence.png" width="30"/>
+    </div>
+    <h1 class="main-title">🔮 Agentic RAG Chatbot</h1>
+    <div style="margin-left: auto; background: rgba(255,255,255,0.1); padding: 5px; border-radius: 8px;">
+        <img src="https://img.icons8.com/material-outlined/24/ffffff/settings--v1.png" width="18"/>
+    </div>
+</div>
+""", unsafe_allow_html=True)
 
 # CACHE THE VECTOR STORE TO PREVENT WHITE SCREEN ON LOAD
 @st.cache_resource(show_spinner="Initializing Vector Embeddings Engine...")
@@ -99,37 +149,62 @@ if "coordinator" not in st.session_state:
 
 # Sidebar for file uploads
 with st.sidebar:
-    st.markdown("### 📥 Document Ingestion")
+    st.markdown('<div class="sidebar-label">Document Upload</div>', unsafe_allow_html=True)
     uploaded_files = st.file_uploader(
-        "Upload Datasets (PDF, PPTX, CSV, DOCX, TXT)", 
+        "Upload New Documents", 
         type=["pdf", "pptx", "csv", "docx", "txt", "md"], 
-        accept_multiple_files=True
+        accept_multiple_files=True,
+        label_visibility="collapsed"
     )
     
-    if st.button("Initialize Data Processing", use_container_width=True) and uploaded_files:
-        with st.spinner("Extracting Document Text..."):
-            docs = []
-            for f in uploaded_files:
-                docs.append({
-                    "name": f.name,
-                    "bytes": f.read()
-                })
+    if uploaded_files:
+        for f in uploaded_files:
+            icon = "📄"
+            if f.name.endswith(".pdf"): icon = "📕"
+            elif f.name.endswith(".pptx"): icon = "📙"
+            elif f.name.endswith(".docx"): icon = "📘"
+            elif f.name.endswith(".csv"): icon = "📗"
             
-            # Delegate entirely to CoordinatorAgent with a progress bar
-            progress_bar = st.progress(0, text="Starting ingestion...")
+            st.markdown(f"""
+            <div class="doc-card">
+                <span class="doc-icon">{icon}</span>
+                <div class="doc-info">
+                    <div class="doc-name">{f.name}</div>
+                    <div class="doc-status">Ready to analyze</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+    if st.button("🚀 Initialize Data Processing", use_container_width=True) and uploaded_files:
+        # Process files...
+        docs = []
+        for f in uploaded_files:
+            docs.append({"name": f.name, "bytes": f.read()})
             
-            # Step 1: Parsing
-            progress_bar.progress(25, text="Agents: Extracting text from documents...")
-            success, parsed_count, indexed_count = st.session_state.coordinator.process_documents(docs)
-            
-            if success:
-                progress_bar.progress(75, text="Agents: Creating vector embeddings...")
-                progress_bar.progress(100, text="Done!")
-                st.info(f"✨ Parsed {parsed_count} structural components.")
-                st.success(f"🚀 Vector Store synchronized with {indexed_count} chunks!")
-            else:
-                progress_bar.empty()
-                st.error("Matrix failure: Document processing rejected.")
+        progress_bar = st.progress(0, text="Starting ingestion...")
+        progress_bar.progress(25, text="Agents: Extracting text...")
+        success, parsed_count, indexed_count = st.session_state.coordinator.process_documents(docs)
+        
+        if success:
+            progress_bar.progress(100, text="Done!")
+            st.success(f"Synchronized {indexed_count} chunks!")
+            st.session_state.indexed_count = indexed_count
+        else:
+            progress_bar.empty()
+            st.error("Failed to process documents.")
+
+    # Sidebar Footer Sections
+    st.markdown('<div class="sidebar-label">Vector Database</div>', unsafe_allow_html=True)
+    db_status = "Ready" if "indexed_count" in st.session_state else "Empty"
+    st.markdown(f'<div class="info-card">Status: <span style="color:#4CAF50">{db_status}</span></div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="sidebar-label">Knowledge Base</div>', unsafe_allow_html=True)
+    count = st.session_state.get("indexed_count", 0)
+    st.markdown(f'<div class="info-card">Count: <span style="color:#ff69b4">{count}</span></div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="sidebar-label">Project Settings</div>', unsafe_allow_html=True)
+    st.markdown('<div class="info-card" style="font-size:0.8rem">v1.2.0 - Agentic Mode</div>', unsafe_allow_html=True)
+
 
 # Main chat area
 st.markdown("### 💬 Multi-Agent Chat Interface")
