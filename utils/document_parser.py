@@ -41,8 +41,12 @@ def parse_pptx(file_bytes: bytes) -> str:
 def parse_csv(file_bytes: bytes) -> str:
     text = ""
     try:
+        # Optimization: Only take the first 5000 rows for large CSVs to maintain performance
         df = pd.read_csv(io.BytesIO(file_bytes))
-        text = df.to_string()
+        if len(df) > 5000:
+            df = df.head(5000)
+        # Convert to a more compact format for RAG
+        text = df.to_csv(index=False, sep='|')
     except Exception as e:
         print(f"Error reading CSV: {e}")
     return text
