@@ -22,18 +22,25 @@ class LLMResponseAgent:
             return "Error: Gemini API key not configured. Please add GEMINI_API_KEY to your .env file."
         
         if not context_list:
-            return "I cannot answer this based on the provided documents as no relevant context was found."
+            return "I cannot find the specific details in the current knowledge base. Please ensure you have uploaded the correct files."
 
         context_str = "\n\n".join(context_list)
-        prompt = f"""You are a helpful AI assistant answering questions based solely on the provided context.
+        prompt = f"""You are a professional Intelligence Analyst. Your goal is to provide a detailed and accurate answer to the user's question based on the provided document segments.
         
-Context:
-{context_str}
-
-User Question: {query}
-
-Answer the question based only on the above context. If the answer is not in the context, say "I cannot answer this based on the provided documents."
-"""
+        ### Guidelines:
+        1. Use the provided context as your primary source of truth.
+        2. If the context contains data (like CSV rows or presentation text), interpret it intelligently to answer the question.
+        3. If you can partially answer the question, do so and mention what is missing.
+        4. If the answer is absolutely not in the context, say "I cannot find the specific details in the current knowledge base, but based on the files you uploaded, I can see information about [briefly summarize topics from context]."
+        
+        ### Context Segments:
+        {context_str}
+        
+        ### User Query:
+        {query}
+        
+        ### Final Response:
+        """
         try:
             response = self.model.generate_content(prompt)
             return response.text

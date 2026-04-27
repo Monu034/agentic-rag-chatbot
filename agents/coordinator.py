@@ -63,7 +63,7 @@ class CoordinatorAgent:
             sender=self.name,
             receiver=self.retrieval_agent.name,
             msg_type="RETRIEVE_CONTEXT",
-            payload={"query": query, "top_k": 3}
+            payload={"query": query, "top_k": 5}
         )
         self.log_mcp(retrieval_req)
         
