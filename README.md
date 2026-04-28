@@ -87,6 +87,19 @@ Chatbot/
 **User:** "What are the core features of the Capstone project mentioned in the slides?"  
 **Assistant:** "Based on the Batch-18 presentation, the core features include Multi-Agent communication via MCP, local FAISS vector storage, and support for multi-format document ingestion."
 
+## ⚠️ Challenges Faced & Solutions
+During the development of this project, several technical challenges were encountered and successfully resolved:
+
+1. **Large Dataset Processing (Performance Bottleneck):**
+   * *Challenge:* Processing massive 20MB+ CSV files (50,000+ rows) caused severe UI freezing and extreme processing times during the vector embedding phase.
+   * *Solution:* Implemented data optimization mechanisms to efficiently parse large files by limiting row counts to maintain performance and converting data into lightweight pipe-separated formats, reducing ingestion time from minutes to seconds.
+2. **Contextual Rigidity (The "I Cannot Answer This" Loop):**
+   * *Challenge:* The LLM was initially too rigid and restrictive, refusing to answer questions if the exact verbatim keywords weren't present in the top 3 retrieved chunks.
+   * *Solution:* Increased the FAISS vector retrieval depth (`top_k`) from 3 to 5 chunks to provide deeper context, and engineered a new "Intelligence Analyst" prompt to allow the AI to intelligently interpolate data and provide helpful partial answers.
+3. **UI Synchronization with Agentic Flow:**
+   * *Challenge:* Keeping the frontend Streamlit UI visually synced with the heavy backend agent processing without confusing the user.
+   * *Solution:* Designed custom interactive status widgets and dynamic metric indicators (e.g., Vector Database: ACTIVE) to give users real-time feedback while the CoordinatorAgent managed MCP message routing.
+
 ## 🔮 Future Improvements
 *   **Memory Management:** Add long-term memory for multi-turn conversations.
 *   **OCR Integration:** Add Tesseract or PaddleOCR to read scanned images and non-digital PDFs.
