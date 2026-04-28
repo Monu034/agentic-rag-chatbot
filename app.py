@@ -108,7 +108,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # 1. Professional Banner
-st.markdown('<div class="prof-banner">Agentic Intelligence Platform: Advanced RAG with MCP Orchestration</div>', unsafe_allow_html=True)
+st.markdown('<div class="prof-banner">Agentic RAG Chatbot for Multi-Format Document QA using MCP</div>', unsafe_allow_html=True)
 
 # 2. Main Title
 st.markdown("""
